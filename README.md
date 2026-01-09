@@ -398,7 +398,7 @@ gcloud beta billing accounts list
 ## Estructura del Proyecto
 
 ```
-gcp-csv-to-bigtable/
+sistema-objetos-gcp/
 ├── main.tf                          # Infraestructura Terraform principal
 ├── variables.tf                     # Variables configurables
 ├── outputs.tf                       # Outputs de Terraform
@@ -426,7 +426,7 @@ gcp-csv-to-bigtable/
 
 ```bash
 # Clonar o descargar el proyecto
-cd gcp-csv-to-bigtable
+cd sistema-objetos-gcp
 
 # Ver comandos disponibles
 make help
