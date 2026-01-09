@@ -120,21 +120,10 @@ resource "google_storage_bucket" "csv_bucket" {
     enabled = true
   }
 
-  # Lifecycle: mover a Nearline después de 30 días
+  # Lifecycle: eliminar después de 31 días
   lifecycle_rule {
     condition {
-      age = 30
-    }
-    action {
-      type          = "SetStorageClass"
-      storage_class = "NEARLINE"
-    }
-  }
-
-  # Lifecycle: eliminar después de 90 días
-  lifecycle_rule {
-    condition {
-      age = 90
+      age = 31
     }
     action {
       type = "Delete"

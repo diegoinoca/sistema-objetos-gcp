@@ -260,29 +260,29 @@ def process_csv(cloud_event):
         message_data = base64.b64decode(pubsub_message['data']).decode('utf-8')
         event_data = json.loads(message_data)
         
+        # Los campos pueden tener diferentes nombres según el formato
         bucket = event_data.get('bucket', '')
         blob_name = event_data.get('name', '')
-        event_type = event_data.get('eventType', '')
-        content_type = event_data.get('contentType', '')
+        # 'eventType' en algunos casos, 'kind' en otros
+        event_type = event_data.get('eventType', event_data.get('kind', ''))
+        content_type = event_data.get('contentType', event_data.get('mediaType', ''))
         
         print(f"📄 Archivo: gs://{bucket}/{blob_name}")
         print(f"📌 Evento: {event_type}")
         print(f"📋 Tipo: {content_type}")
         
         # Verificar que es el bucket correcto
-        if bucket != BUCKET_NAME:
+        if bucket and bucket != BUCKET_NAME:
             print(f"⏭️ Ignorando - bucket diferente: {bucket}")
             return
         
         # Verificar que es un CSV
-        if not blob_name.lower().endswith('.csv'):
+        if not blob_name or not blob_name.lower().endswith('.csv'):
             print(f"⏭️ Ignorando - no es CSV: {blob_name}")
             return
         
-        # Verificar evento
-        if event_type != 'OBJECT_FINALIZE':
-            print(f"⏭️ Ignorando evento: {event_type}")
-            return
+        # Si llegamos aquí y tenemos bucket + blob_name, procesamos
+        # Las notificaciones de Storage con OBJECT_FINALIZE pueden no incluir explícitamente el eventType
         
         # Generar hash del archivo
         file_hash = generate_file_hash(bucket, blob_name)
